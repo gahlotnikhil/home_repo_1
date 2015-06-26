@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 
 import com.ngs.cform.manager.ExcelDataManager;
 import com.ngs.cform.panel.ListViewPanel;
+import com.ngs.cform.util.ConfigSession;
 
 public class RefreshListener implements ActionListener {
 
@@ -12,10 +13,9 @@ public class RefreshListener implements ActionListener {
 
 	private ExcelDataManager dataManager;
 
-	public RefreshListener(ListViewPanel recordView,
-			ExcelDataManager dataManager) {
+	public RefreshListener(ListViewPanel recordView) {
 		this.recordView = recordView;
-		this.dataManager = dataManager;
+		this.dataManager = ConfigSession.getConfigSession().getDataManager();
 	}
 
 	@Override

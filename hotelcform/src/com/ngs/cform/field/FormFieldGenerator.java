@@ -3,7 +3,6 @@ package com.ngs.cform.field;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +30,8 @@ public class FormFieldGenerator {
 	private Map<String, FormFieldPair> keyFieldMap;
 	
 	private ResourceConfig resourceConfig;
+	
+	private long recordId;
 	
 	public FormFieldGenerator(ResourceConfig resourceConfig, Properties properties) {
 		this.resourceConfig = resourceConfig;
@@ -167,6 +168,9 @@ public class FormFieldGenerator {
 					new FormFieldPair(generateLabel(orderedField.getKey()), panel, orderedField.getType()));
 		}
 		
+		if (record != null) {
+			recordId = record.getId();
+		}
 		return keyFieldMap;
 	}
 	
@@ -226,6 +230,8 @@ public class FormFieldGenerator {
 			
 			record.setValueByKey(key, value);
 		}
+		
+		record.setValueByKey(RecordModel.KEY_ID, recordId);
 		
 		return record;
 	}

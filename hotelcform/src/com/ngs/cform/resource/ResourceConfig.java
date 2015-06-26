@@ -1,7 +1,8 @@
 package com.ngs.cform.resource;
 
-import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -17,12 +18,12 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.ngs.cform.field.AbstractFormField;
+import com.ngs.cform.field.AbstractFormField.FieldType;
 import com.ngs.cform.field.CheckField;
 import com.ngs.cform.field.ComboField;
 import com.ngs.cform.field.RadioField;
 import com.ngs.cform.field.TextAreaField;
 import com.ngs.cform.field.TextField;
-import com.ngs.cform.field.AbstractFormField.FieldType;
 import com.ngs.cform.util.GeneralUtils;
 
 public class ResourceConfig {
@@ -182,7 +183,7 @@ public class ResourceConfig {
 		DocumentBuilder db;
 		try {
 			db = dbf.newDocumentBuilder();
-			document = db.parse(new File(GeneralUtils.getResourcePath(resourceXML).getPath()));
+			document = db.parse(Paths.get(GeneralUtils.getResourcePath(resourceXML).toURI()).toFile());
 		} catch (ParserConfigurationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -190,6 +191,9 @@ public class ResourceConfig {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 

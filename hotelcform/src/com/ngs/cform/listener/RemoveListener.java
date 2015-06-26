@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 
 import com.ngs.cform.manager.ExcelDataManager;
 import com.ngs.cform.panel.ListViewPanel;
+import com.ngs.cform.util.ConfigSession;
 
 public class RemoveListener implements ActionListener {
 
@@ -15,9 +16,9 @@ public class RemoveListener implements ActionListener {
 
 	private ExcelDataManager dataManager;
 
-	public RemoveListener(ListViewPanel recordView, ExcelDataManager dataManager) {
+	public RemoveListener(ListViewPanel recordView) {
 		this.recordView = recordView;
-		this.dataManager = dataManager;
+		this.dataManager = ConfigSession.getConfigSession().getDataManager();
 	}
 
 	@Override
@@ -28,7 +29,7 @@ public class RemoveListener implements ActionListener {
 
 		if (JOptionPane.YES_OPTION == ok) {
 			Vector row = recordView.getSelectedRow();
-			;
+			
 			Long id = (Long) row.get(0);
 			dataManager.remove(id);
 

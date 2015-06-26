@@ -26,6 +26,7 @@ import javax.swing.table.TableRowSorter;
 
 import com.ngs.cform.model.RecordModel;
 import com.ngs.cform.resource.ResourceConfig;
+import com.ngs.cform.util.ConfigSession;
 
 public class ListViewPanel extends JPanel {
 
@@ -45,9 +46,10 @@ public class ListViewPanel extends JPanel {
 	private ResourceConfig resourceConfig;
 	private Properties properties;
 
-	public ListViewPanel(ResourceConfig resourceConfig, Properties properties) {
-		this.resourceConfig = resourceConfig;
-		this.properties = properties;
+	public ListViewPanel() {
+		ConfigSession configSession = ConfigSession.getConfigSession();
+		this.resourceConfig = configSession.getResourceConfig();
+		this.properties = configSession.getProperties();
 	}
 
 	private TableRowSorter<TableModel> sorter;
