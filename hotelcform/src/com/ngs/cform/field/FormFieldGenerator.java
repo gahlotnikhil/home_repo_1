@@ -44,7 +44,9 @@ public class FormFieldGenerator {
 			if (record != null && record.getValueByKey(field.getKey()) != null) {
 				field.setValue(record.getValueByKey(field.getKey()).toString());
 			}
-			field.setEnable(editMode);
+			if (field.isEnable()) {
+				field.setEnable(editMode);
+			}
 		}
 		return fields;
 	}

@@ -131,7 +131,7 @@ public class WordManager {
 	public static void main(String[] args) {
 		try {
 			WordManager manager = new WordManager(new File("/development/java proj/Workbook.docx"), 
-					GeneralUtils.loadProperties("../resource.properties"));
+					GeneralUtils.loadProperties("../resource.properties", false));
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

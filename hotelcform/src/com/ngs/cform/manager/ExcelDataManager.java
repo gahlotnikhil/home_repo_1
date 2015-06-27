@@ -27,6 +27,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.ngs.cform.model.RecordModel;
 import com.ngs.cform.resource.ResourceConfig;
+import com.ngs.cform.util.GeneralUtils;
 
 public class ExcelDataManager {
 	
@@ -254,8 +255,8 @@ public class ExcelDataManager {
 			}
 		}
 		
-		InputStream defImageIS = this.getClass().getResourceAsStream(DEFAULT_IMAGE);
 		try {
+			InputStream defImageIS = GeneralUtils.getResourceAsStream(DEFAULT_IMAGE);
 			return IOUtils.toByteArray(defImageIS);
 		} catch (IOException e) {
 			e.printStackTrace();

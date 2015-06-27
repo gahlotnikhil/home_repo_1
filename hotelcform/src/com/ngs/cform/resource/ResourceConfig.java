@@ -1,8 +1,6 @@
 package com.ngs.cform.resource;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,7 +26,7 @@ import com.ngs.cform.util.GeneralUtils;
 
 public class ResourceConfig {
 	
-	public static String RESOURCE_XML = "../resource.xml";
+	public static String RESOURCE_XML = "resource.xml";
 	
 	private Document document;
 	
@@ -183,7 +181,7 @@ public class ResourceConfig {
 		DocumentBuilder db;
 		try {
 			db = dbf.newDocumentBuilder();
-			document = db.parse(Paths.get(GeneralUtils.getResourcePath(resourceXML).toURI()).toFile());
+			document = db.parse(GeneralUtils.getResourceAsStream(resourceXML));
 		} catch (ParserConfigurationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -193,9 +191,6 @@ public class ResourceConfig {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
+		}
 	}
 }
