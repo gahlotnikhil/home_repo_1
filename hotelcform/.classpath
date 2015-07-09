@@ -15,5 +15,6 @@
 	<classpathentry kind="lib" path="poi-ooxml-schemas-3.11-20141221.jar"/>
 	<classpathentry kind="lib" path="poi-scratchpad-3.11-20141221.jar"/>
 	<classpathentry kind="lib" path="commons-lang-2.6.jar"/>
+	<classpathentry kind="lib" path="log4j-api-2.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

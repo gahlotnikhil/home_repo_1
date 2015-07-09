@@ -17,6 +17,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 
+import org.apache.log4j.Logger;
+
 import com.ngs.cform.listener.DownloadListener;
 import com.ngs.cform.listener.EditListener;
 import com.ngs.cform.listener.RecordGetter;
@@ -35,6 +37,8 @@ public class HotelCFormApplication extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
 	private ConfigSession configSession;
+	
+	private  Logger logger = Logger.getLogger(HotelCFormApplication.class);
 	
     public HotelCFormApplication() {
     	
@@ -56,7 +60,7 @@ public class HotelCFormApplication extends JFrame {
         
     	tabbedPane.addTab("New Record", scrollPane );
     	tabbedPane.addTab("Search", searchContainer );
-    	tabbedPane.addTab("Settings", settingsContainer );
+    	//tabbedPane.addTab("Settings", settingsContainer );
     	
     	setSize(1050, 600);
     	setPreferredSize(new Dimension(1050, 600));
@@ -86,6 +90,7 @@ public class HotelCFormApplication extends JFrame {
     
     private void loadConfigFiles() {
 		configSession = ConfigSession.loadSession();
+		logger.info("Configuration initialized...");
 	}
     
 	private void constructSettingsContainer(JPanel settingsContainer) {

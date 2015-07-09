@@ -7,12 +7,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.PictureData;
 import org.apache.poi.ss.usermodel.Row;
@@ -30,6 +30,8 @@ import com.ngs.cform.resource.ResourceConfig;
 import com.ngs.cform.util.GeneralUtils;
 
 public class ExcelDataManager {
+	
+	private  Logger logger = Logger.getLogger(ExcelDataManager.class);
 	
 	public static String CUSTOMER_SHEET = "customer";
 	
@@ -89,16 +91,16 @@ public class ExcelDataManager {
 			try {
 				inputStream.close();
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error("Error occurred", e);
 			}
 			
 			try {
 				outputStream.close();
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error("Error occurred", e);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error occurred while initializing excel.", e);
 		}
 	}
 	
@@ -147,7 +149,7 @@ public class ExcelDataManager {
 			// refresh the document with latest content
 			intialize(file);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error occurred writing to stream.", e);
 		}
 	}
 
@@ -239,7 +241,7 @@ public class ExcelDataManager {
 			updateSheet(record, newRow);
 			return true;
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Error occurred while adding record.", e);
 		}
 		return false;
 	}
@@ -259,7 +261,7 @@ public class ExcelDataManager {
 			InputStream defImageIS = GeneralUtils.getResourceAsStream(DEFAULT_IMAGE);
 			return IOUtils.toByteArray(defImageIS);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Error occurred while getting avatar image.", e);
 		}
 		return null;
 	}
@@ -306,7 +308,7 @@ public class ExcelDataManager {
 				imageIndexCell.setCellValue(imageIndex);
 				
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error("Error occurred saving image.", e);
 			}
 		}
 	}
@@ -325,7 +327,7 @@ public class ExcelDataManager {
 					updateSheet(record, row);
 					return true;
 				} catch (IOException e) {
-					e.printStackTrace();
+					logger.error("Error occurred while updating record.", e);
 				}
 			}
 		}
@@ -348,7 +350,7 @@ public class ExcelDataManager {
 				writeToStream();
 				return true;
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error("Error occurred while removing record.", e);
 			}
 		}
 		return false;
@@ -418,24 +420,4 @@ public class ExcelDataManager {
 		return getRecordModel(row);
 	}
 
-	public static void main(String[] args) throws URISyntaxException {
-//		ExcelDataManager manager = new ExcelDataManager(new File("/development/java proj/Workbook.xlsx"));
-//		RecordModel record = new RecordModel();
-//		record.setHotelName("some hotel");
-//		
-//		record.setDateOfBirth("13 march");
-//		
-//		//manager.add(record);
-//		RecordModel search = new RecordModel();
-//		search.setHotelName("some hotel3");
-//		search.setDateOfBirth("13 march");
-//		System.out.println(manager.find(search));
-		
-//		URL url = ExcelDataManager.class.getResource("images.jpeg");
-//		InputStream in = ExcelDataManager.class.getResourceAsStream("images.jpeg");
-//		
-//		File defaultImage = new File(url.toURI());
-//		
-//		System.out.println(defaultImage.getAbsolutePath());
-	}
 }

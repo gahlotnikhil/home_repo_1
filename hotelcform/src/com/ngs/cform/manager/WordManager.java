@@ -2,11 +2,10 @@ package com.ngs.cform.manager;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
@@ -16,11 +15,11 @@ import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 
 import com.ngs.cform.model.RecordModel;
-import com.ngs.cform.util.GeneralUtils;
 
 
 public class WordManager {
 	
+	private  Logger logger = Logger.getLogger(WordManager.class);
 	
 	public WordManager(File template, Properties properties) {
 		this.template = template;
@@ -41,10 +40,10 @@ public class WordManager {
 			try {
 				is.close();
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error("Error occurred while closing stream.", e);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Error occurred while initialiaing doc template.", e);
 		}
 	}
 	
@@ -109,7 +108,7 @@ public class WordManager {
 								templateDoc.createPicture(xwpfRun, blipId, para.getDocument().getNextPicNameNumber(XWPFDocument.PICTURE_TYPE_JPEG), 150, 150);
 								
 							} catch (InvalidFormatException e) {
-								e.printStackTrace();
+								logger.error("Error occurred while creating picture object.", e);
 							}
 						}
 					}
@@ -125,36 +124,6 @@ public class WordManager {
 		while (index >= 0) {
 			para.removeRun(index);
 			index--;
-		}
-	}
-
-	public static void main(String[] args) {
-		try {
-			WordManager manager = new WordManager(new File("/development/java proj/Workbook.docx"), 
-					GeneralUtils.loadProperties("../resource.properties", false));
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		RecordModel record = new RecordModel();
-		record.setValueByKey("hotel_name", "Vivanta");
-		
-		//XWPFDocument doc = manager.createWordDoc(record);
-		
-		try {
-			FileOutputStream os =new FileOutputStream(new File("/development/java proj/Workbook_data.docx"));
-			//doc.write(os);
-			
-			try {
-				os.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 

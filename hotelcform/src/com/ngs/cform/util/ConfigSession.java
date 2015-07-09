@@ -59,8 +59,10 @@ public class ConfigSession {
 			wordManager = new WordManager(new File(String.valueOf(configProperties.get(PROPERTY_WORDFORMATFILE))), properties);
 			
 			fieldGenerator = new FormFieldGenerator(resourceConfig, properties);
+			
+			// Initialise log
+			new LogConfig(storePath + "app.log");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

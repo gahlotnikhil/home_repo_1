@@ -3,6 +3,7 @@ package com.ngs.cform.manager;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.log4j.Logger;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.xmlbeans.XmlException;
@@ -12,6 +13,8 @@ import org.openxmlformats.schemas.drawingml.x2006.main.CTPositiveSize2D;
 import org.openxmlformats.schemas.drawingml.x2006.wordprocessingDrawing.CTInline;
 
 public class CustomXWPFDocument extends XWPFDocument {
+	
+	private  Logger logger = Logger.getLogger(CustomXWPFDocument.class);
 
 	public CustomXWPFDocument(InputStream in) throws IOException
     {
@@ -63,7 +66,7 @@ public class CustomXWPFDocument extends XWPFDocument {
         }
         catch(XmlException xe)
         {
-            xe.printStackTrace();
+        	logger.error("Error occurred while parsing picture xml.", xe);
         }
         inline.set(xmlToken);
         //graphicData.set(xmlToken);

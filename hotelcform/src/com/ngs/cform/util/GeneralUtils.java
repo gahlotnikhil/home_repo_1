@@ -11,8 +11,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
 public class GeneralUtils {
 	
+	private static Logger logger = Logger.getLogger(GeneralUtils.class);
+
 	public static Properties loadProperties(String path, boolean isAbsolute) throws IOException {
         Properties props = new Properties();
         if (isAbsolute) {
@@ -44,8 +48,7 @@ public class GeneralUtils {
 			}
 			return path;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Error occurred while copying file to directory", e);
 		}
 		return null;
 	}
@@ -56,11 +59,9 @@ public class GeneralUtils {
 			out = new FileOutputStream(path);
 			props.store(out, null);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Unable to find the properties file", e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Error occurred while saving a value in properties file", e);
 		}
 	}
 }

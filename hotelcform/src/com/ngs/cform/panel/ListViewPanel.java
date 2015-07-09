@@ -24,11 +24,15 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+import org.apache.log4j.Logger;
+
 import com.ngs.cform.model.RecordModel;
 import com.ngs.cform.resource.ResourceConfig;
 import com.ngs.cform.util.ConfigSession;
 
 public class ListViewPanel extends JPanel {
+	
+	private  Logger logger = Logger.getLogger(ListViewPanel.class);
 
 	private static final long serialVersionUID = 1L;
 
@@ -135,7 +139,7 @@ public class ListViewPanel extends JPanel {
 						currentPageIndex = v;
 					}
 				} catch (Exception ex) {
-					ex.printStackTrace();
+					logger.error("Error occurred while performing navigation.", ex);
 				}
 				initFilterAndButton();
 			}

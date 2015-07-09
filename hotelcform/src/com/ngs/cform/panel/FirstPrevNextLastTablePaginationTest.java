@@ -6,7 +6,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
-import java.util.Map.Entry;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -24,7 +23,11 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+import org.apache.log4j.Logger;
+
 public class FirstPrevNextLastTablePaginationTest {
+	
+	private  Logger logger = Logger.getLogger(FirstPrevNextLastTablePaginationTest.class);
 	
 	private final String[] columnNames = { "Year", "String", "Comment" };
 	
@@ -109,7 +112,7 @@ public class FirstPrevNextLastTablePaginationTest {
 						currentPageIndex = v;
 					}
 				} catch (Exception ex) {
-					ex.printStackTrace();
+					logger.error("Error occurred while performing navigation.", ex);
 				}
 				initFilterAndButton();
 			}

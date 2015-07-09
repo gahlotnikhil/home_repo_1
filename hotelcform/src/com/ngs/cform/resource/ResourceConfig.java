@@ -10,6 +10,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -25,6 +26,8 @@ import com.ngs.cform.field.TextField;
 import com.ngs.cform.util.GeneralUtils;
 
 public class ResourceConfig {
+	
+	private  Logger logger = Logger.getLogger(ResourceConfig.class);
 	
 	public static String RESOURCE_XML = "resource.xml";
 	
@@ -183,14 +186,11 @@ public class ResourceConfig {
 			db = dbf.newDocumentBuilder();
 			document = db.parse(GeneralUtils.getResourceAsStream(resourceXML));
 		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Unable to parse xml.", e);
 		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Unable to parse xml.", e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Unable to parse xml.", e);
 		}
 	}
 }

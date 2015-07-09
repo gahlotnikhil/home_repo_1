@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 
 import javax.swing.JFileChooser;
 
+import org.apache.log4j.Logger;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
 import com.ngs.cform.manager.ExcelDataManager;
@@ -16,6 +17,8 @@ import com.ngs.cform.model.RecordModel;
 import com.ngs.cform.util.ConfigSession;
 
 public class DownloadListener implements ActionListener {
+	
+	private  Logger logger = Logger.getLogger(DownloadListener.class);
 
 	private ExcelDataManager dataManager;
 	private WordManager wordManager;
@@ -41,28 +44,28 @@ public class DownloadListener implements ActionListener {
 	    chooser.setAcceptAllFileFilterUsed(false);
 
 	    if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-	      System.out.println("getCurrentDirectory(): " + chooser.getCurrentDirectory());
-	      System.out.println("getSelectedFile() : " + chooser.getSelectedFile());
+	      logger.debug("getCurrentDirectory(): " + chooser.getCurrentDirectory());
+	      logger.debug("getSelectedFile() : " + chooser.getSelectedFile());
 	      
 	      try {
-	      File selectedDir = chooser.getSelectedFile();
-	      File outFile = new File(selectedDir.getPath() + "/" + "record_" +record.getId() + ".docx");
-	      FileOutputStream os = new FileOutputStream(outFile);
-	      xwpfDocument.write(os);
-	      
-	      Desktop desktop = Desktop.getDesktop();
-	      desktop.open(outFile);
-	      
-	      try {
-				os.close();
-			} catch (Exception excp) {
-				excp.printStackTrace();
-			}
+		      File selectedDir = chooser.getSelectedFile();
+		      File outFile = new File(selectedDir.getPath() + "/" + "record_" +record.getId() + ".docx");
+		      FileOutputStream os = new FileOutputStream(outFile);
+		      xwpfDocument.write(os);
+		      
+		      Desktop desktop = Desktop.getDesktop();
+		      desktop.open(outFile);
+		      
+		      try {
+					os.close();
+				} catch (Exception excp) {
+					logger.error("Error occurred while closing the stream.", excp);
+				}
 	      } catch(Exception excp) {
-	    	  excp.printStackTrace();
+	    	  logger.error("Error occurred while opening the stream.", excp);
 	      }
 	    } else {
-	      System.out.println("No Selection ");
+	    	logger.debug("No Selection ");
 	    }
 	}
 
