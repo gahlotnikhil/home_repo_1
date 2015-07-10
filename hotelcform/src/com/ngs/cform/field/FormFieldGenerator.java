@@ -6,9 +6,9 @@ import java.awt.FlowLayout;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeMap;
-import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -51,10 +51,6 @@ public class FormFieldGenerator {
 		return fields;
 	}
 	
-	public static void main(String[] args) {
-		//new FormFieldGenerator("The hotel");
-	}
-
 	private JLabel generateLabel(String key) {
 		Object valueObj = properties.get(key);
 		String val = key;
@@ -88,18 +84,20 @@ public class FormFieldGenerator {
 		return panel;
 	}
 	
-	private JPanel generateComboFieldPanel(Vector<String> selectStrings) {
+	private JPanel generateComboFieldPanel(AbstractFormField orderedField) {
 		JPanel panel = new JPanel();
-		JComboBox<String> combo = new JComboBox<>(selectStrings);
+		JComboBox<String> combo = new JComboBox<>(orderedField.getValueList());
+		combo.setSelectedItem(orderedField.getValue());
 		panel.add(combo);
 		return panel;
 	}
 	
-	private JPanel generateRadioFieldPanel(Vector<String> selectStrings) {
+	private JPanel generateRadioFieldPanel(AbstractFormField orderedField) {
 		JPanel panel = new JPanel();
 		ButtonGroup group = new ButtonGroup();
-		for (String str: selectStrings) {
+		for (String str: orderedField.getValueList()) {
 			JRadioButton rButton = new JRadioButton(str);
+			rButton.setSelected(str.equalsIgnoreCase(orderedField.getValue()));
 			group.add(rButton);
 			
 			panel.add(rButton);
@@ -108,22 +106,24 @@ public class FormFieldGenerator {
 		return panel;
 	}
 	
-	private JPanel generateCheckFieldPanel(Vector<String> selectStrings) {
+	private JPanel generateCheckFieldPanel(AbstractFormField orderedField) {
 		JPanel panel = new JPanel();
-		for (String str: selectStrings) {
+		for (String str: orderedField.getValueList()) {
 			JCheckBox check = new JCheckBox(str);
+			check.setSelected(str.equalsIgnoreCase(orderedField.getValue()));
+			
 			panel.add(check);
 		}
 		return panel;
 	}
 	
 	public boolean isMandatoryAvailable(RecordModel record) {
-//		for (String key: resourceConfig.getMandatoryFieldKeys()) {
-//			Object val = record.getValueByKey(key);
-//			if (val == null || val.toString().isEmpty()) {
-//				return false;
-//			}
-//		}
+		for (String key: resourceConfig.getMandatoryFieldKeys()) {
+			Object val = record.getValueByKey(key);
+			if (val == null || val.toString().isEmpty()) {
+				return false;
+			}
+		}
 		return true;
 	}
 	
@@ -148,15 +148,15 @@ public class FormFieldGenerator {
 					break;
 				}
 				case CHECK: {
-					panel = generateCheckFieldPanel(orderedField.getValueList());
+					panel = generateCheckFieldPanel(orderedField);
 					break;
 				}
 				case COMBO: {
-					panel = generateComboFieldPanel(orderedField.getValueList());
+					panel = generateComboFieldPanel(orderedField);
 					break;
 				}
 				case RADIO: {
-					panel = generateRadioFieldPanel(orderedField.getValueList());
+					panel = generateRadioFieldPanel(orderedField);
 					break;
 				}
 				default: {
@@ -174,6 +174,35 @@ public class FormFieldGenerator {
 			recordId = record.getId();
 		}
 		return keyFieldMap;
+	}
+	
+	public void clearFields() {
+		for (Entry<String, FormFieldPair> fieldPair : keyFieldMap.entrySet()) {
+			AbstractFormField formField = resourceConfig.getField(fieldPair.getKey());
+			String defaultValue = "";
+			if (formField != null) {
+				defaultValue = formField.getValue();
+			}
+			resetField(fieldPair.getValue().getPanel(), defaultValue);
+		}
+	}
+	
+	private void resetField(JPanel c, String defaultValue){
+		for (Component comp : c.getComponents()) {
+			if (comp instanceof JPanel) {
+				resetField((JPanel) comp, defaultValue);
+			} else if (comp instanceof JTextField) {
+				((JTextField) comp).setText(defaultValue);
+			} else if (comp instanceof JTextArea) {
+				((JTextArea) comp).setText(defaultValue);
+			} else if (comp instanceof JRadioButton) {
+				((JRadioButton) comp).setSelected(false);
+			} else if (comp instanceof JCheckBox) {
+				((JCheckBox) comp).setSelected(false);
+			} else if (comp instanceof JComboBox) {
+				((JComboBox) comp).setSelectedItem(null);
+			}
+		}
 	}
 	
 	public RecordModel getDataModel() {

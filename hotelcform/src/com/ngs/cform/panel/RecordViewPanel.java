@@ -67,7 +67,7 @@ public class RecordViewPanel extends JPanel implements ActionListener{
 			
 		} else {
 			// clear
-			
+			configSession.getFieldGenerator().clearFields();
 		}
 	}
 	
@@ -85,6 +85,10 @@ public class RecordViewPanel extends JPanel implements ActionListener{
 			}
 			labelPanel.add(entry.getValue().getLabel());
 			panel.add(labelPanel);
+			
+			labelPanel.setSize(new Dimension(200, 300));
+			entry.getValue().getPanel().setSize(new Dimension(200, 300));
+			
 			panel.setAlignmentX(JPanel.LEFT_ALIGNMENT);
 			
 			// Right panel
@@ -160,12 +164,9 @@ public class RecordViewPanel extends JPanel implements ActionListener{
         leftContainer.setPreferredSize(new Dimension(800, 1300));
         
         Webcam webcam = Webcam.getDefault();
-        //webcam.setViewSize(WebcamResolution.QVGA.getSize());
 		final WebcamPanel panel = new WebcamPanel(webcam, false);
         //panel.setMirrored(true);
         
-//		panel.setBounds(600, 30, WebcamResolution.QVGA.getSize().width, WebcamResolution.QVGA.getSize().height);
-		
 		JPanel camPanel = new JPanel(new FlowLayout());
 		camPanel.add(panel);
 		rightContainer.add(camPanel);
@@ -175,13 +176,11 @@ public class RecordViewPanel extends JPanel implements ActionListener{
 		JPanel camBtnContainer = new JPanel(new GridLayout(0,2));
 		
 		JButton openCamBtn = new JButton("Open");
-//		openCamBtn.setBounds(700, 300, 100, 30);
 		
 		openCamBtn.addActionListener(new OpenCamListner(panel, imagePanel));
 		
 		camBtnContainer.add(openCamBtn);
 		
-//        imagePanel.setBounds(600, 30, WebcamResolution.QVGA.getSize().width, WebcamResolution.QVGA.getSize().height);
         JLabel imgLabel = new JLabel();
         imagePanel.add(imgLabel);
         camPanel.add(imagePanel);
@@ -189,7 +188,6 @@ public class RecordViewPanel extends JPanel implements ActionListener{
 		imagePanel.setVisible(false);
 		
 		JButton captureBtn = new JButton("Capture");
-//		captureBtn.setBounds(800, 300, 100, 30);
 		
 		captureBtn.addActionListener(new CaptureListner(webcam, panel, imagePanel));
 		

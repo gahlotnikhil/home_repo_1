@@ -138,8 +138,14 @@
             <label-key>purpose_of_visit</label-key>
             <type>radio</type>
             <value-list>
+                <value>Business</value>
+                <value>Transit</value>
                 <value>Official</value>
+                <value>Employment</value>
                 <value>Leissure</value>
+                <value>Education</value>
+                <value>Conference</value>
+                <value>Visit</value>
             </value-list>
         </field>
         <field>

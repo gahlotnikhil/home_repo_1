@@ -118,6 +118,18 @@ public class ResourceConfig {
 		return fields;
 	}
 	
+	public AbstractFormField getField(String keyStr) {
+		for (Node node: getFieldNodes("fields")) {
+			if ("field".equalsIgnoreCase(node.getNodeName())) {
+				Node key = getChildNode(node, "key");
+				if (keyStr.equalsIgnoreCase(getNodeValue(key))) {
+					return constructField(node);
+				}
+			}
+		 }
+		return null;
+	}
+	
 	private AbstractFormField constructField(Node fieldNode) {
 		Node type = getChildNode(fieldNode, "type");
 		Node key = getChildNode(fieldNode, "key");

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
+import com.ngs.cform.ProgressBar;
 import com.ngs.cform.field.FormFieldGenerator;
 import com.ngs.cform.manager.ExcelDataManager;
 import com.ngs.cform.manager.WordManager;
@@ -13,7 +14,7 @@ public class ConfigSession {
 	
 	public static String NGS_APP_DATA_DIR = "ngs-app-data";
 	
-	private static ConfigSession session = new ConfigSession();
+	private static ConfigSession session;
 	
 	private ExcelDataManager dataManager;
     private WordManager wordManager;
@@ -21,21 +22,23 @@ public class ConfigSession {
     private Properties configProperties;
     private ResourceConfig resourceConfig;
     private Properties properties;
+    private ProgressBar progressBar;
 	
-	private ConfigSession() {
+	private ConfigSession(ProgressBar progressBar) {
+		this.progressBar = progressBar;
 		loadConfigFiles();
 	}
 	
 	public static ConfigSession getConfigSession() {
 		if (session == null) {
-			session = loadSession();
+			session = loadSession(null);
 		}
 		return session;
 	}
 	
-	public static ConfigSession loadSession() {
+	public static ConfigSession loadSession(ProgressBar progressBar) {
 		if (session == null) {
-			session = new ConfigSession();
+			session = new ConfigSession(progressBar);
 		}
 		
 		return session;
@@ -45,23 +48,32 @@ public class ConfigSession {
 		try {
 			// TODO use this file from outside the application eg: /home/ngs-app-data/config.properties
 			String storePath = createStoreAtHome();
+			progressBar.addProgress(5);
 			// Store all the files in the same location as default
 			// User defined values should override values in ~home/config.properties
 			// Defaults will always be there in the config.properties as part of the application.
 			configProperties = copyConfigFilesToStore(storePath);
+			progressBar.addProgress(10);
 			
 			resourceConfig = new ResourceConfig(configProperties.get(PROPERTY_RESOURCEXML) != null ? String.valueOf(configProperties.get(PROPERTY_RESOURCEXML)) : null);
 			
 			properties = GeneralUtils.loadProperties(storePath + RESOURCE_PROPERTIES, true);
+			progressBar.addProgress(10);
 			
 			File file = new File(String.valueOf(configProperties.get(PROPERTY_XLDATAFILE)));
+			progressBar.addProgress(3);
 			dataManager = new ExcelDataManager(file, resourceConfig);
+			progressBar.addProgress(15);
 			wordManager = new WordManager(new File(String.valueOf(configProperties.get(PROPERTY_WORDFORMATFILE))), properties);
+			progressBar.addProgress(10);
 			
 			fieldGenerator = new FormFieldGenerator(resourceConfig, properties);
+			progressBar.addProgress(10);
 			
 			// Initialise log
 			new LogConfig(storePath + "app.log");
+			
+			progressBar.addProgress(5);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

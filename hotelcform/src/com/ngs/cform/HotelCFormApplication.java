@@ -40,6 +40,8 @@ public class HotelCFormApplication extends JFrame {
 	
 	private  Logger logger = Logger.getLogger(HotelCFormApplication.class);
 	
+	private static ProgressBar progressBar = new ProgressBar();
+	
     public HotelCFormApplication() {
     	
     	loadConfigFiles();
@@ -71,25 +73,32 @@ public class HotelCFormApplication extends JFrame {
     	
     	mainContainer.add(tabbedPane);
     	
+    	progressBar.addProgress(5);
+    	
     	add(mainContainer);
     	mainContainer.setVisible(true);
     	
     	RecordViewPanel recordViewPanel = new RecordViewPanel();
     	recordViewPanel.contstructAddRecordContainer(addRecordContainer);
     	
+    	progressBar.addProgress(5);
+    	
     	constructSearchContainer(searchContainer);
     	
     	constructSettingsContainer(settingsContainer);
     	
+    	progressBar.addProgress(10);
+    	
     	setVisible(true);
         setLayout(new FlowLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setTitle("Registration Form in Java");
+        setTitle("C Form Application");
  
+        progressBar.completeProgress();
 	}
     
     private void loadConfigFiles() {
-		configSession = ConfigSession.loadSession();
+		configSession = ConfigSession.loadSession(progressBar);
 		logger.info("Configuration initialized...");
 	}
     
