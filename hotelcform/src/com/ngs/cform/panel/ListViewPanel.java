@@ -19,13 +19,17 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 import org.apache.log4j.Logger;
 
+import com.ngs.cform.listener.RowSelectionListener;
 import com.ngs.cform.model.RecordModel;
 import com.ngs.cform.resource.ResourceConfig;
 import com.ngs.cform.util.ConfigSession;
@@ -49,11 +53,14 @@ public class ListViewPanel extends JPanel {
 	
 	private ResourceConfig resourceConfig;
 	private Properties properties;
+	
+	private RowSelectionListener rowSelectionListener;
 
-	public ListViewPanel() {
+	public ListViewPanel(RowSelectionListener rowSelectionListener) {
 		ConfigSession configSession = ConfigSession.getConfigSession();
 		this.resourceConfig = configSession.getResourceConfig();
 		this.properties = configSession.getProperties();
+		this.rowSelectionListener = rowSelectionListener;
 	}
 
 	private TableRowSorter<TableModel> sorter;
@@ -111,6 +118,15 @@ public class ListViewPanel extends JPanel {
 		refreshTable(data);
 
 		this.add(constructUI());
+		
+		ListSelectionModel rowSelMod = table.getSelectionModel();
+		rowSelMod.addListSelectionListener(new ListSelectionListener() {
+			
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				rowSelectionListener.onRowSelection(getSelectedRow());
+			}
+		});
 	}
 
 	private JComponent constructUI() {
@@ -209,6 +225,9 @@ public class ListViewPanel extends JPanel {
 	@SuppressWarnings("rawtypes")
 	public Vector getSelectedRow() {
 		int index = table.getSelectedRow();
+		if (index == -1) {
+			return null;
+		}
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         Vector row = (Vector) model.getDataVector().get((currentPageIndex - 1) * itemsPerPage + index);
 		return row;

@@ -6,7 +6,6 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Map;
 
@@ -15,13 +14,9 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
-import com.github.sarxos.webcam.Webcam;
-import com.github.sarxos.webcam.WebcamPanel;
 import com.ngs.cform.field.FormFieldPair;
 import com.ngs.cform.listener.DownloadListener;
-import com.ngs.cform.listener.OpenCamListner;
 import com.ngs.cform.listener.RecordGetter;
 import com.ngs.cform.model.RecordModel;
 import com.ngs.cform.util.ConfigSession;
@@ -33,16 +28,12 @@ public class RecordViewPanel extends JPanel implements ActionListener{
 	 */
 	private static final long serialVersionUID = 1L;
 	private ConfigSession configSession;
-    private BufferedImage avatarImage;
+    private CameraPanel cameraPanel;
 	
 	public RecordViewPanel() {
 		this.configSession = ConfigSession.getConfigSession();
 	}
 	
-	public BufferedImage getAvatarImage() {
-		return avatarImage;
-	}
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if ("Submit".equals(e.getActionCommand())) {
@@ -50,8 +41,11 @@ public class RecordViewPanel extends JPanel implements ActionListener{
 			RecordModel record = configSession.getFieldGenerator().getDataModel();
 			
 			if (configSession.getFieldGenerator().isMandatoryAvailable(record)) {
-				configSession.getDataManager().add(record, avatarImage);
+				configSession.getDataManager().add(record, cameraPanel.getCapturedImage());
 				JOptionPane.showMessageDialog(null, "Record Saved successfully!");
+				
+				// clear fields
+				clearForm();
 			} else {
 				JOptionPane.showMessageDialog(null, "Please fill mandatory fields to proceed!");
 			}
@@ -59,16 +53,21 @@ public class RecordViewPanel extends JPanel implements ActionListener{
 			RecordModel record = configSession.getFieldGenerator().getDataModel();
 			
 			if (configSession.getFieldGenerator().isMandatoryAvailable(record)) {
-				configSession.getDataManager().update(record, avatarImage);
+				configSession.getDataManager().update(record, cameraPanel.getCapturedImage());
 				JOptionPane.showMessageDialog(null, "Record Saved successfully!");
 			} else {
 				JOptionPane.showMessageDialog(null, "Please fill mandatory fields to proceed!");
 			}
 			
-		} else {
-			// clear
-			configSession.getFieldGenerator().clearFields();
+		} if ("Clear".equals(e.getActionCommand()))  {
+			clearForm();
 		}
+	}
+	
+	private void clearForm() {
+		// clear
+		configSession.getFieldGenerator().clearFields();
+		cameraPanel.resetWebcam();
 	}
 	
 	private void addFormFields(JPanel panel, RecordModel record, boolean editMode) {
@@ -143,8 +142,6 @@ public class RecordViewPanel extends JPanel implements ActionListener{
 	
 	public void contstructAddRecordContainer(JPanel addRecordContainer) {
 		JPanel leftContainer = new JPanel(new GridLayout(0,2));
-		JPanel rightContainer = new JPanel(new FlowLayout());
-		rightContainer.setPreferredSize(new Dimension(180, 1300));
 		
 		JButton btn1 = new JButton("Submit");
 		JButton btn2 = new JButton("Clear");
@@ -163,76 +160,9 @@ public class RecordViewPanel extends JPanel implements ActionListener{
         
         leftContainer.setPreferredSize(new Dimension(800, 1300));
         
-        Webcam webcam = Webcam.getDefault();
-		final WebcamPanel panel = new WebcamPanel(webcam, false);
-        //panel.setMirrored(true);
-        
-		JPanel camPanel = new JPanel(new FlowLayout());
-		camPanel.add(panel);
-		rightContainer.add(camPanel);
-		
-		JPanel imagePanel = new JPanel();
-		
-		JPanel camBtnContainer = new JPanel(new GridLayout(0,2));
-		
-		JButton openCamBtn = new JButton("Open");
-		
-		openCamBtn.addActionListener(new OpenCamListner(panel, imagePanel));
-		
-		camBtnContainer.add(openCamBtn);
-		
-        JLabel imgLabel = new JLabel();
-        imagePanel.add(imgLabel);
-        camPanel.add(imagePanel);
-		
-		imagePanel.setVisible(false);
-		
-		JButton captureBtn = new JButton("Capture");
-		
-		captureBtn.addActionListener(new CaptureListner(webcam, panel, imagePanel));
-		
-		camBtnContainer.add(captureBtn);	
-		
-		rightContainer.add(camBtnContainer);
-		
-		
 		addRecordContainer.add(leftContainer);
-		addRecordContainer.add(rightContainer);
-	}
-	
-	class CaptureListner implements ActionListener {
-		
-		private Webcam webcam;
-		
-		private WebcamPanel webcamPanel;
-		
-		private JPanel imagePanel;
-		
-		public CaptureListner(Webcam webcam, WebcamPanel panel, JPanel imagePanel) {
-			this.webcam = webcam;
-			this.webcamPanel = panel;
-			this.imagePanel = imagePanel;
-		}
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-	        SwingUtilities.invokeLater(new Runnable() {
-
-				@Override
-				public void run() {
-					avatarImage = webcam.getImage();
-					JLabel imgLabel = new JLabel(new ImageIcon(avatarImage));
-					
-					webcamPanel.stop();
-					
-					webcamPanel.setVisible(false);
-					imagePanel.setVisible(true);
-					imagePanel.remove(0);
-					imagePanel.add(imgLabel);
-					
-				}
-			});
-		}
-		
+		// Camera panel
+		cameraPanel = new CameraPanel();
+		addRecordContainer.add(cameraPanel);
 	}
 }

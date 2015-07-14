@@ -46,7 +46,7 @@ public class ConfigSession {
 
 	private void loadConfigFiles() {
 		try {
-			// TODO use this file from outside the application eg: /home/ngs-app-data/config.properties
+			// use this file from outside the application eg: /home/ngs-app-data/config.properties
 			String storePath = createStoreAtHome();
 			progressBar.addProgress(5);
 			// Store all the files in the same location as default

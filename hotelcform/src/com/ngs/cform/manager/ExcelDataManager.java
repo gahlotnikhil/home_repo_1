@@ -258,12 +258,16 @@ public class ExcelDataManager {
 		}
 		
 		try {
-			InputStream defImageIS = GeneralUtils.getResourceAsStream(DEFAULT_IMAGE);
-			return IOUtils.toByteArray(defImageIS);
+			return getDefaultAvatarImage();
 		} catch (IOException e) {
 			logger.error("Error occurred while getting avatar image.", e);
 		}
 		return null;
+	}
+	
+	public byte[] getDefaultAvatarImage() throws IOException {
+		InputStream defImageIS = GeneralUtils.getResourceAsStream(DEFAULT_IMAGE);
+		return IOUtils.toByteArray(defImageIS);
 	}
 	
 	private void saveImage(long id, BufferedImage avatarImage) {

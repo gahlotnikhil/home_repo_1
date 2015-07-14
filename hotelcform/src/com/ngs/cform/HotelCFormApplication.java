@@ -24,6 +24,7 @@ import com.ngs.cform.listener.EditListener;
 import com.ngs.cform.listener.RecordGetter;
 import com.ngs.cform.listener.RefreshListener;
 import com.ngs.cform.listener.RemoveListener;
+import com.ngs.cform.listener.RowSelectionListener;
 import com.ngs.cform.model.RecordModel;
 import com.ngs.cform.panel.ListViewPanel;
 import com.ngs.cform.panel.RecordViewPanel;
@@ -205,14 +206,34 @@ public class HotelCFormApplication extends JFrame {
 	}
 
 	private void constructSearchContainer(JPanel searchContainer) {
+		final JButton viewBtn = new JButton("View");
+		final JButton downloadBtn = new JButton("Download");
+		final JButton editBtn = new JButton("Edit");
+		final JButton refreshBtn = new JButton("Refresh");
+		final JButton removeBtn = new JButton("Remove");
+		viewBtn.setEnabled(false);
+		downloadBtn.setEnabled(false);
+		editBtn.setEnabled(false);
+		removeBtn.setEnabled(false);
 		
-		final ListViewPanel recordView = new ListViewPanel();
+		RowSelectionListener rowSelectionListener = new RowSelectionListener() {
+			
+			@Override
+			public void onRowSelection(Vector row) {
+				viewBtn.setEnabled(row != null);
+				downloadBtn.setEnabled(row != null);
+				editBtn.setEnabled(row != null);
+				removeBtn.setEnabled(row != null);
+			}
+		};
+		
+		final ListViewPanel recordView = new ListViewPanel(rowSelectionListener);
 		
 		recordView.createView(configSession.getDataManager().findAll());
 		
 		searchContainer.add(recordView);
 		
-		JButton viewBtn = new JButton("View");
+		
 		viewBtn.addActionListener(new EditListener(new RecordGetter() {
 
 			@Override
@@ -223,7 +244,6 @@ public class HotelCFormApplication extends JFrame {
 			}
 		}, false));
 		
-		JButton downloadBtn = new JButton("Download");
 		downloadBtn.addActionListener(new DownloadListener(new RecordGetter() {
 
 			@Override
@@ -234,7 +254,6 @@ public class HotelCFormApplication extends JFrame {
 			}
 		}));
 		
-		JButton editBtn = new JButton("Edit");
 		editBtn.addActionListener(new EditListener(new RecordGetter() {
 
 			@Override
@@ -245,10 +264,8 @@ public class HotelCFormApplication extends JFrame {
 			}
 		}, true));
 		
-		JButton refreshBtn = new JButton("Refresh");
 		refreshBtn.addActionListener(new RefreshListener(recordView));
 		
-		JButton removeBtn = new JButton("Remove");
 		removeBtn.addActionListener(new RemoveListener(recordView));
 		
 		JPanel btnPanel = new JPanel(new GridLayout(0,1));
